@@ -8,6 +8,7 @@
 #include <string.h>
 
 #define FOC_TWO_PI 6.2831853071795864769f
+#define FOC_RAD_TO_DEG 57.2957795130823208768f
 
 typedef struct {
     volatile uint8_t pending;
@@ -83,6 +84,11 @@ static void apply_command(uint8_t mode, float value)
     case FOC_CAN_MODE_SPEED:
         CMD.CMD_Type = CMD_SPEED;
         CMD.Target = clampf(value, FOC_CAN_MAX_SPEED_RPS) * FOC_TWO_PI;
+        break;
+
+    case FOC_CAN_MODE_POSITION:
+        CMD.CMD_Type = CMD_POSITION;
+        CMD.Target = value * FOC_RAD_TO_DEG;
         break;
 
     case FOC_CAN_MODE_STOP:
@@ -218,7 +224,7 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan_handle)
         header.StdId != FOC_CAN_COMMAND_ID ||
         header.DLC != 8U ||
         data[1] != FOC_CAN_NODE_ID ||
-        data[0] > FOC_CAN_MODE_SPEED ||
+        data[0] > FOC_CAN_MODE_POSITION ||
         checksum8(data, 7U) != data[7]) {
         status.rx_error_count++;
         return;

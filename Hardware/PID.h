@@ -29,6 +29,7 @@ typedef struct
 
 void PID_Init(PID_Handle *PID_Handler,float Kp,float Ki,float Kd,
 	            float Intemax,float Intemin,float Outmax,float Outmin);
+void PID_Reset(PID_Handle *PID_Handler);
 float PID_Calculate(PID_Handle *PID_Handler,float Current_Error);
 float Speed_Loop(PID_Handle *PID_Handler,float Target_Speed);
 float Torque_q_Loop(PID_Handle *PID_Handler,float Target_q);

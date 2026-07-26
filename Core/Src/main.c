@@ -34,6 +34,7 @@
 #include "Paremeter.h"
 #include "foc_can.h"
 #include <stdio.h>
+#include <string.h>
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -72,6 +73,52 @@ float d_v=0;
 float d_w=0;
 extern float I_U,I_V;
 static uint32_t serial_telemetry_ms;
+
+static void Serial_SendTelemetry(void)
+{
+  char tx[256];
+  int length;
+
+  if (UART2_GetLogMode() == UART2_LOG_TEXT)
+  {
+    length = snprintf(tx,
+                      sizeof(tx),
+                      "speed_rad_s=%.5f,target=%.5f,enc_rad=%.5f,motor_deg=%.3f,elec_rad=%.5f,pos_rad=%.5f,iq=%.5f,id=%.5f,cmd=%u\r\n",
+                      (double)Filter_Speed,
+                      (double)CMD.Target,
+                      (double)Encoder_Angle,
+                      (double)Motor_Angle,
+                      (double)Elec_Angle,
+                      (double)Motor_Position_Rad,
+                      (double)Filter_I_q,
+                      (double)Filter_I_d,
+                      (unsigned)CMD.CMD_Type);
+  }
+  else
+  {
+    length = snprintf(tx,
+                      sizeof(tx),
+                      "%.5f,%.5f,%.5f,%.3f,%.5f,%.5f,%.5f,%.5f,%u\r\n",
+                      (double)Filter_Speed,
+                      (double)CMD.Target,
+                      (double)Encoder_Angle,
+                      (double)Motor_Angle,
+                      (double)Elec_Angle,
+                      (double)Motor_Position_Rad,
+                      (double)Filter_I_q,
+                      (double)Filter_I_d,
+                      (unsigned)CMD.CMD_Type);
+  }
+  if (length < 0)
+  {
+    return;
+  }
+  if ((uint32_t)length >= sizeof(tx))
+  {
+    length = (int)sizeof(tx) - 1;
+  }
+  (void)UART2_SendBuffer((const uint8_t *)tx, (uint16_t)length);
+}
 
 /* USER CODE END 0 */
 
@@ -131,7 +178,7 @@ int main(void)
   PID_Init(&PID_Speed,0.01,0.0002,0,0.5,-0.5,1,-1);
   PID_Init(&PID_Torque_d,1,0.001,0.5,0.2,-0.2,1,-1);
 	PID_Init(&PID_Torque_q,1,0.01,0,0.1,-0.1,1,-1);	
-	PID_Init(&PID_Position,0.025,0.0001,0.0,0.1,-0.1,1,-1);
+	PID_Init(&PID_Position,6.0,0.0,0.0,0.0,0.0,10.0,-10.0);
 
 	if (FocCan_Init() != HAL_OK)
 	{
@@ -145,7 +192,7 @@ int main(void)
 	HAL_ADCEx_InjectedStart_IT(&hadc1);
 	HAL_ADCEx_InjectedStart(&hadc2);	
 	
-	HAL_UART_Receive_IT(&huart2,&UART_RX_BUFFER[Index],1);
+	UART2_StartRx();
   
   /* USER CODE END 2 */
 
@@ -156,15 +203,12 @@ int main(void)
 	  uint32_t now = HAL_GetTick();
 
 	  FocCan_Process();
+	  UART2_ProcessPendingCommand();
+	  UART2_PollRecovery();
 	  if ((now - serial_telemetry_ms) >= 50U)
 	  {
 	    serial_telemetry_ms = now;
-	    printf("%f,%f,%f,%f,%f\n",
-	           Filter_Speed,
-	           CMD.Target,
-	           Encoder_Angle,
-	           Motor_Angle,
-	           Elec_Angle);
+	    Serial_SendTelemetry();
 	  }
 	  HAL_Delay(1);
     /* USER CODE END WHILE */

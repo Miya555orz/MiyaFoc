@@ -16,7 +16,8 @@
 typedef enum {
     FOC_CAN_MODE_STOP = 0,
     FOC_CAN_MODE_CURRENT = 1,
-    FOC_CAN_MODE_SPEED = 2
+    FOC_CAN_MODE_SPEED = 2,
+    FOC_CAN_MODE_POSITION = 3
 } FocCanMode_t;
 
 typedef enum {

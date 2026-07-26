@@ -54,6 +54,12 @@ typedef struct
 	float Target;
 }CMD_TypeDef;
 
+typedef enum
+{
+  UART2_LOG_CSV = 0,
+  UART2_LOG_TEXT
+}UART2_LogMode_t;
+
 extern CMD_TypeDef CMD;
 extern uint8_t UART_RX_BUFFER[64];
 extern uint8_t Index;
@@ -63,6 +69,11 @@ extern uint8_t Index;
 void MX_USART2_UART_Init(void);
 
 /* USER CODE BEGIN Prototypes */
+void UART2_StartRx(void);
+void UART2_PollRecovery(void);
+void UART2_ProcessPendingCommand(void);
+UART2_LogMode_t UART2_GetLogMode(void);
+HAL_StatusTypeDef UART2_SendBuffer(const uint8_t *data, uint16_t length);
 
 /* USER CODE END Prototypes */
 

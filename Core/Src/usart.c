@@ -118,6 +118,7 @@ void HAL_UART_MspDeInit(UART_HandleTypeDef* uartHandle)
 }
 
 /* USER CODE BEGIN 1 */
+#include <ctype.h>
 #include <stdio.h>
 #include <string.h>
 #include "foc_can.h"
@@ -125,66 +126,221 @@ void HAL_UART_MspDeInit(UART_HandleTypeDef* uartHandle)
 uint8_t UART_RX_BUFFER[64]={0};
 uint8_t Index=0;
 CMD_TypeDef CMD;
+static uint8_t uart_rx_byte;
+static uint8_t uart_line_buffer[64];
+static volatile uint8_t uart_line_ready;
+static volatile uint16_t uart_line_length;
+static volatile uint32_t uart_rx_error_count;
+static volatile uint32_t uart_rx_overflow_count;
+static UART2_LogMode_t uart2_log_mode = UART2_LOG_CSV;
 
 int fputc(int c, FILE *stream)
 {
   uint8_t ch[] = {(uint8_t)c};
-  HAL_UART_Transmit(&huart2, ch, 1, HAL_MAX_DELAY);
+  (void)UART2_SendBuffer(ch, 1U);
   return c;
 }
+
+static void UART2_ClearErrors(void)
+{
+  __HAL_UART_CLEAR_PEFLAG(&huart2);
+  __HAL_UART_CLEAR_FEFLAG(&huart2);
+  __HAL_UART_CLEAR_NEFLAG(&huart2);
+  __HAL_UART_CLEAR_OREFLAG(&huart2);
+  huart2.ErrorCode = HAL_UART_ERROR_NONE;
+}
+
+static void UART2_RearmRx(void)
+{
+  if (huart2.RxState != HAL_UART_STATE_BUSY_RX)
+  {
+    (void)HAL_UART_Receive_IT(&huart2, &uart_rx_byte, 1U);
+  }
+}
+
+static void UART2_NormalizeLine(char *line)
+{
+  char *src = line;
+  char *dst = line;
+
+  while (*src == ' ' || *src == '\t')
+  {
+    src++;
+  }
+  while (*src != '\0')
+  {
+    char ch = *src++;
+    if (ch == '=')
+    {
+      ch = ':';
+    }
+    *dst++ = (char)toupper((unsigned char)ch);
+  }
+  *dst = '\0';
+  while (dst > line && (dst[-1] == ' ' || dst[-1] == '\t'))
+  {
+    *--dst = '\0';
+  }
+}
+
+static void UART2_ApplyCommandLine(char *line)
+{
+  float target;
+
+  UART2_NormalizeLine(line);
+  if(sscanf(line,"SPEED:%f",&target)==1)
+  {
+    CMD.Target=target;
+    CMD.CMD_Type=CMD_SPEED;
+    FocCan_NotifySerialCommand();
+  }
+  else if(sscanf(line,"POSITION:%f",&target)==1)
+  {
+    CMD.Target=target;
+    CMD.CMD_Type=CMD_POSITION;
+    FocCan_NotifySerialCommand();
+  }
+  else if(sscanf(line,"TORQUE:%f",&target)==1)
+  {
+    CMD.Target=target;
+    CMD.CMD_Type=CMD_TORQUE;
+    FocCan_NotifySerialCommand();
+  }
+  else if(strcmp(line,"STOP")==0)
+  {
+    FocCan_Stop();
+  }
+  else if(strcmp(line,"LOG:TEXT")==0)
+  {
+    uart2_log_mode = UART2_LOG_TEXT;
+  }
+  else if(strcmp(line,"LOG:CSV")==0)
+  {
+    uart2_log_mode = UART2_LOG_CSV;
+  }
+  else
+  {
+    FocCan_Stop();
+  }
+}
+
+void UART2_StartRx(void)
+{
+  __disable_irq();
+  Index = 0U;
+  memset(UART_RX_BUFFER, 0, sizeof(UART_RX_BUFFER));
+  uart_line_ready = 0U;
+  uart_line_length = 0U;
+  __enable_irq();
+
+  UART2_ClearErrors();
+  UART2_RearmRx();
+}
+
+void UART2_PollRecovery(void)
+{
+  if (huart2.ErrorCode != HAL_UART_ERROR_NONE ||
+      huart2.RxState != HAL_UART_STATE_BUSY_RX)
+  {
+    UART2_ClearErrors();
+    UART2_RearmRx();
+  }
+}
+
+void UART2_ProcessPendingCommand(void)
+{
+  char line[64];
+  uint16_t length;
+
+  __disable_irq();
+  if (uart_line_ready == 0U)
+  {
+    __enable_irq();
+    return;
+  }
+  length = uart_line_length;
+  if (length >= sizeof(line))
+  {
+    length = sizeof(line) - 1U;
+  }
+  memcpy(line, uart_line_buffer, length);
+  line[length] = '\0';
+  uart_line_ready = 0U;
+  __enable_irq();
+
+  UART2_ApplyCommandLine(line);
+}
+
+UART2_LogMode_t UART2_GetLogMode(void)
+{
+  return uart2_log_mode;
+}
+
+HAL_StatusTypeDef UART2_SendBuffer(const uint8_t *data, uint16_t length)
+{
+  uint32_t timeout_ms;
+
+  if (data == 0 || length == 0U)
+  {
+    return HAL_OK;
+  }
+
+  timeout_ms = 4U + ((((uint32_t)length * 10U * 1000U) + 115199U) / 115200U);
+  if (timeout_ms < 8U)
+  {
+    timeout_ms = 8U;
+  }
+  if (timeout_ms > 50U)
+  {
+    timeout_ms = 50U;
+  }
+
+  return HAL_UART_Transmit(&huart2, (uint8_t *)data, length, timeout_ms);
+}
+
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
   if(huart->Instance==USART2)
 	{ 				 
-     if(UART_RX_BUFFER[Index]=='\n')
+     if(uart_rx_byte=='\n')
 		 {
-			 float target;
-
 			 UART_RX_BUFFER[Index]='\0';
-			 if(sscanf((char *)UART_RX_BUFFER,"SPEED:%f",&target)==1)
-			 {
-				 CMD.Target=target;
-				 CMD.CMD_Type=CMD_SPEED;
-				 FocCan_NotifySerialCommand();
-			 }
-			 else if(sscanf((char *)UART_RX_BUFFER,"POSITION:%f",&target)==1)
-			 {
-				 CMD.Target=target;
-			   CMD.CMD_Type=CMD_POSITION;
-				 FocCan_NotifySerialCommand();
-			 }
-			 else if(sscanf((char *)UART_RX_BUFFER,"TORQUE:%f",&target)==1)
-			 {
-				 CMD.Target=target;
-			   CMD.CMD_Type=CMD_TORQUE;
-				 FocCan_NotifySerialCommand();
-			 }
-			 else if(strcmp((char *)UART_RX_BUFFER,"STOP")==0)
-			 {
-			   FocCan_Stop();
-			 }
-			 else
-			 {
-			   FocCan_Stop();
-			 }
+       if (uart_line_ready == 0U)
+       {
+         uart_line_length = Index;
+         memcpy(uart_line_buffer, UART_RX_BUFFER, (uint16_t)(Index + 1U));
+         uart_line_ready = 1U;
+       }
 			 Index=0;
 			 memset(UART_RX_BUFFER,0,sizeof(UART_RX_BUFFER));
 		 }	
-		 else if(UART_RX_BUFFER[Index]=='\r')
+		 else if(uart_rx_byte=='\r')
 		 {
 		   
 		 }
 		 else 
 		 {
+       UART_RX_BUFFER[Index]=uart_rx_byte;
 			 Index++;
 			 if(Index>=sizeof(UART_RX_BUFFER)-1)
 		   {
 		     Index=0;
 				 memset(UART_RX_BUFFER,0,sizeof(UART_RX_BUFFER));
+         uart_rx_overflow_count++;
 		   }
 		 }
-		 HAL_UART_Receive_IT(&huart2,&UART_RX_BUFFER[Index],1);		 
+		 UART2_RearmRx();		 
 	}
+}
+
+void HAL_UART_ErrorCallback(UART_HandleTypeDef *huart)
+{
+  if(huart->Instance==USART2)
+  {
+    uart_rx_error_count++;
+    UART2_ClearErrors();
+    UART2_RearmRx();
+  }
 }
 
 /* USER CODE END 1 */
