@@ -42,7 +42,7 @@ I (Drivers\CMSIS\Include\cmsis_compiler.h)(0x6A58551F)
 I (Hardware\Open_Loop.h)(0x6A585522)
 I (Hardware\PID.h)(0x6A66138C)
 I (Hardware\Paremeter.h)(0x6A636259)
-I (Hardware\foc_can.h)(0x6A661C54)
+I (Hardware\foc_can.h)(0x6A676452)
 F (Core/Src/gpio.c)(0x6A585518)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m3 -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-D__MICROLIB -gdwarf-4 -O3 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I Core/Inc -I Drivers/STM32F1xx_HAL_Driver/Inc -I Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I Drivers/CMSIS/Device/ST/STM32F1xx/Include -I Drivers/CMSIS/Include -I Hardware -I Middlewares/ST/ARM/DSP/Inc-I./RTE/_FOC-ID:/keil5/ARM/PACK/ARM/CMSIS/6.2.0/CMSIS/Core/Include-ID:/keil5/ARM/PACK/Keil/STM32F1xx_DFP/2.2.0/Device/Include-D__UVISION_VERSION="543" -DSTM32F10X_MD -D_RTE_ -DUSE_HAL_DRIVER -DSTM32F103xB-o foc/gpio.o -MMD)
 I (Core\Inc\gpio.h)(0x6A585518)
 I (Core\Inc\main.h)(0x6A585518)
@@ -108,8 +108,8 @@ I (Drivers\CMSIS\Include\cmsis_compiler.h)(0x6A58551F)
 I (Hardware\LowPassFilter.h)(0x6A585522)
 I (Hardware\Open_Loop.h)(0x6A585522)
 I (Core\Inc\usart.h)(0x6A661AAE)
-I (Hardware\foc_can.h)(0x6A661C54)
-F (Core/Src/can.c)(0x6A636281)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m3 -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-D__MICROLIB -gdwarf-4 -O3 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I Core/Inc -I Drivers/STM32F1xx_HAL_Driver/Inc -I Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I Drivers/CMSIS/Device/ST/STM32F1xx/Include -I Drivers/CMSIS/Include -I Hardware -I Middlewares/ST/ARM/DSP/Inc-I./RTE/_FOC-ID:/keil5/ARM/PACK/ARM/CMSIS/6.2.0/CMSIS/Core/Include-ID:/keil5/ARM/PACK/Keil/STM32F1xx_DFP/2.2.0/Device/Include-D__UVISION_VERSION="543" -DSTM32F10X_MD -D_RTE_ -DUSE_HAL_DRIVER -DSTM32F103xB-o foc/can.o -MMD)
+I (Hardware\foc_can.h)(0x6A676452)
+F (Core/Src/can.c)(0x6A674E1B)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m3 -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-D__MICROLIB -gdwarf-4 -O3 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I Core/Inc -I Drivers/STM32F1xx_HAL_Driver/Inc -I Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I Drivers/CMSIS/Device/ST/STM32F1xx/Include -I Drivers/CMSIS/Include -I Hardware -I Middlewares/ST/ARM/DSP/Inc-I./RTE/_FOC-ID:/keil5/ARM/PACK/ARM/CMSIS/6.2.0/CMSIS/Core/Include-ID:/keil5/ARM/PACK/Keil/STM32F1xx_DFP/2.2.0/Device/Include-D__UVISION_VERSION="543" -DSTM32F10X_MD -D_RTE_ -DUSE_HAL_DRIVER -DSTM32F103xB-o foc/can.o -MMD)
 I (Core\Inc\can.h)(0x6A585518)
 I (Core\Inc\main.h)(0x6A585518)
 I (Drivers\STM32F1xx_HAL_Driver\Inc\stm32f1xx_hal.h)(0x6A585521)
@@ -232,7 +232,7 @@ I (Middlewares\ST\ARM\DSP\Inc\arm_math.h)(0x6A585523)
 I (Drivers\CMSIS\Include\cmsis_compiler.h)(0x6A58551F)
 I (Hardware\LowPassFilter.h)(0x6A585522)
 I (Hardware\PID.h)(0x6A66138C)
-F (Core/Src/usart.c)(0x6A661AB0)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m3 -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-D__MICROLIB -gdwarf-4 -O3 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I Core/Inc -I Drivers/STM32F1xx_HAL_Driver/Inc -I Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I Drivers/CMSIS/Device/ST/STM32F1xx/Include -I Drivers/CMSIS/Include -I Hardware -I Middlewares/ST/ARM/DSP/Inc-I./RTE/_FOC-ID:/keil5/ARM/PACK/ARM/CMSIS/6.2.0/CMSIS/Core/Include-ID:/keil5/ARM/PACK/Keil/STM32F1xx_DFP/2.2.0/Device/Include-D__UVISION_VERSION="543" -DSTM32F10X_MD -D_RTE_ -DUSE_HAL_DRIVER -DSTM32F103xB-o foc/usart.o -MMD)
+F (Core/Src/usart.c)(0x6A674F4F)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m3 -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-D__MICROLIB -gdwarf-4 -O3 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I Core/Inc -I Drivers/STM32F1xx_HAL_Driver/Inc -I Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I Drivers/CMSIS/Device/ST/STM32F1xx/Include -I Drivers/CMSIS/Include -I Hardware -I Middlewares/ST/ARM/DSP/Inc-I./RTE/_FOC-ID:/keil5/ARM/PACK/ARM/CMSIS/6.2.0/CMSIS/Core/Include-ID:/keil5/ARM/PACK/Keil/STM32F1xx_DFP/2.2.0/Device/Include-D__UVISION_VERSION="543" -DSTM32F10X_MD -D_RTE_ -DUSE_HAL_DRIVER -DSTM32F103xB-o foc/usart.o -MMD)
 I (Core\Inc\usart.h)(0x6A661AAE)
 I (Core\Inc\main.h)(0x6A585518)
 I (Drivers\STM32F1xx_HAL_Driver\Inc\stm32f1xx_hal.h)(0x6A585521)
@@ -261,7 +261,7 @@ I (Drivers\STM32F1xx_HAL_Driver\Inc\stm32f1xx_hal_spi.h)(0x6A585521)
 I (Drivers\STM32F1xx_HAL_Driver\Inc\stm32f1xx_hal_tim.h)(0x6A585521)
 I (Drivers\STM32F1xx_HAL_Driver\Inc\stm32f1xx_hal_tim_ex.h)(0x6A585521)
 I (Drivers\STM32F1xx_HAL_Driver\Inc\stm32f1xx_hal_uart.h)(0x6A585521)
-I (Hardware\foc_can.h)(0x6A661C54)
+I (Hardware\foc_can.h)(0x6A676452)
 F (Core/Src/stm32f1xx_it.c)(0x6A585518)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m3 -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-D__MICROLIB -gdwarf-4 -O3 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I Core/Inc -I Drivers/STM32F1xx_HAL_Driver/Inc -I Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I Drivers/CMSIS/Device/ST/STM32F1xx/Include -I Drivers/CMSIS/Include -I Hardware -I Middlewares/ST/ARM/DSP/Inc-I./RTE/_FOC-ID:/keil5/ARM/PACK/ARM/CMSIS/6.2.0/CMSIS/Core/Include-ID:/keil5/ARM/PACK/Keil/STM32F1xx_DFP/2.2.0/Device/Include-D__UVISION_VERSION="543" -DSTM32F10X_MD -D_RTE_ -DUSE_HAL_DRIVER -DSTM32F103xB-o foc/stm32f1xx_it.o -MMD)
 I (Core\Inc\main.h)(0x6A585518)
 I (Drivers\STM32F1xx_HAL_Driver\Inc\stm32f1xx_hal.h)(0x6A585521)
@@ -949,8 +949,8 @@ F (Hardware\LowPassFilter.c)(0x6A585522)(-xc -std=c99 --target=arm-arm-none-eabi
 I (Hardware\LowPassFilter.h)(0x6A585522)
 F (Hardware\LowPassFilter.h)(0x6A585522)()
 F (Hardware\Paremeter.h)(0x6A636259)()
-F (Hardware\foc_can.c)(0x6A661C55)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m3 -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-D__MICROLIB -gdwarf-4 -O3 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I Core/Inc -I Drivers/STM32F1xx_HAL_Driver/Inc -I Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I Drivers/CMSIS/Device/ST/STM32F1xx/Include -I Drivers/CMSIS/Include -I Hardware -I Middlewares/ST/ARM/DSP/Inc-I./RTE/_FOC-ID:/keil5/ARM/PACK/ARM/CMSIS/6.2.0/CMSIS/Core/Include-ID:/keil5/ARM/PACK/Keil/STM32F1xx_DFP/2.2.0/Device/Include-D__UVISION_VERSION="543" -DSTM32F10X_MD -D_RTE_ -DUSE_HAL_DRIVER -DSTM32F103xB-o foc/foc_can.o -MMD)
-I (Hardware\foc_can.h)(0x6A661C54)
+F (Hardware\foc_can.c)(0x6A676453)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m3 -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-D__MICROLIB -gdwarf-4 -O3 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I Core/Inc -I Drivers/STM32F1xx_HAL_Driver/Inc -I Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I Drivers/CMSIS/Device/ST/STM32F1xx/Include -I Drivers/CMSIS/Include -I Hardware -I Middlewares/ST/ARM/DSP/Inc-I./RTE/_FOC-ID:/keil5/ARM/PACK/ARM/CMSIS/6.2.0/CMSIS/Core/Include-ID:/keil5/ARM/PACK/Keil/STM32F1xx_DFP/2.2.0/Device/Include-D__UVISION_VERSION="543" -DSTM32F10X_MD -D_RTE_ -DUSE_HAL_DRIVER -DSTM32F103xB-o foc/foc_can.o -MMD)
+I (Hardware\foc_can.h)(0x6A676452)
 I (Drivers\STM32F1xx_HAL_Driver\Inc\stm32f1xx_hal.h)(0x6A585521)
 I (Core\Inc\stm32f1xx_hal_conf.h)(0x6A585518)
 I (Drivers\STM32F1xx_HAL_Driver\Inc\stm32f1xx_hal_rcc.h)(0x6A585521)
@@ -983,5 +983,5 @@ I (Hardware\Paremeter.h)(0x6A636259)
 I (Core\Inc\can.h)(0x6A585518)
 I (Core\Inc\main.h)(0x6A585518)
 I (Core\Inc\usart.h)(0x6A661AAE)
-F (Hardware\foc_can.h)(0x6A661C54)()
+F (Hardware\foc_can.h)(0x6A676452)()
 F (Middlewares/ST/ARM/DSP/Lib/arm_cortexM3l_math.lib)(0x6A585523)()

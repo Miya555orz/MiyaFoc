@@ -177,7 +177,8 @@ static void UART2_NormalizeLine(char *line)
     *dst++ = (char)toupper((unsigned char)ch);
   }
   *dst = '\0';
-  while (dst > line && (dst[-1] == ' ' || dst[-1] == '\t'))
+  while (dst > line &&
+         (dst[-1] == ' ' || dst[-1] == '\t' || dst[-1] == '\r' || dst[-1] == '\n'))
   {
     *--dst = '\0';
   }
@@ -186,6 +187,9 @@ static void UART2_NormalizeLine(char *line)
 static void UART2_ApplyCommandLine(char *line)
 {
   float target;
+  unsigned long profile;
+  unsigned long loop_mode;
+  const FocCanStatus_t *can_status;
 
   UART2_NormalizeLine(line);
   if(sscanf(line,"SPEED:%f",&target)==1)
@@ -209,6 +213,97 @@ static void UART2_ApplyCommandLine(char *line)
   else if(strcmp(line,"STOP")==0)
   {
     FocCan_Stop();
+  }
+  else if(sscanf(line,"CANPROFILE:%lu",&profile)==1 ||
+          sscanf(line,"CAN PROFILE %lu",&profile)==1 ||
+          sscanf(line,"CAN:%lu",&profile)==1)
+  {
+    if (FocCan_SetTimingProfile((uint8_t)profile) == HAL_OK)
+    {
+      printf("can_profile=%lu ok\r\n", profile);
+    }
+    else
+    {
+      printf("can_profile=%lu fail\r\n", profile);
+    }
+  }
+  else if(strcmp(line,"CANSTAT")==0 || strcmp(line,"CAN STAT")==0)
+  {
+    can_status = FocCan_GetStatus();
+    printf("can profile=%u loop=%u tx=%lu fail=%lu abort=%lu free=%lu err=0x%08lX txid=0x%03lX rx=%lu rxerr=%lu rxid=0x%03lX lb=%lu btr=0x%08lX esr=0x%08lX tsr=0x%08lX\r\n",
+           (unsigned)can_status->timing_profile,
+           (unsigned)can_status->loopback_mode,
+           (unsigned long)can_status->tx_count,
+           (unsigned long)can_status->tx_error_count,
+           (unsigned long)can_status->tx_abort_count,
+           (unsigned long)can_status->last_tx_free_level,
+           (unsigned long)can_status->last_hal_error,
+           (unsigned long)can_status->last_tx_id,
+           (unsigned long)can_status->rx_count,
+           (unsigned long)can_status->rx_error_count,
+           (unsigned long)can_status->last_rx_id,
+           (unsigned long)can_status->loopback_count,
+           (unsigned long)CAN1->BTR,
+           (unsigned long)CAN1->ESR,
+           (unsigned long)CAN1->TSR);
+  }
+  else if(strcmp(line,"CANLOOP")==0 || strcmp(line,"CAN LOOP")==0)
+  {
+    if (FocCan_SetLoopback(1U) == HAL_OK)
+    {
+      printf("can_loop ok btr=0x%08lX\r\n", (unsigned long)CAN1->BTR);
+    }
+    else
+    {
+      printf("can_loop fail btr=0x%08lX\r\n", (unsigned long)CAN1->BTR);
+    }
+  }
+  else if(sscanf(line,"CANLOOP:%lu",&loop_mode)==1 ||
+          sscanf(line,"LOOP:%lu",&loop_mode)==1)
+  {
+    if (FocCan_SetLoopback((loop_mode != 0UL) ? 1U : 0U) == HAL_OK)
+    {
+      printf("can_loop=%lu ok btr=0x%08lX\r\n", loop_mode, (unsigned long)CAN1->BTR);
+    }
+    else
+    {
+      printf("can_loop=%lu fail btr=0x%08lX\r\n", loop_mode, (unsigned long)CAN1->BTR);
+    }
+  }
+  else if(strcmp(line,"CANNORMAL")==0 ||
+          strcmp(line,"CAN NORMAL")==0 ||
+          strcmp(line,"NORMAL")==0 ||
+          strcmp(line,"CANMODE:NORMAL")==0)
+  {
+    if (FocCan_SetLoopback(0U) == HAL_OK)
+    {
+      printf("can_normal ok btr=0x%08lX\r\n", (unsigned long)CAN1->BTR);
+    }
+    else
+    {
+      printf("can_normal fail btr=0x%08lX\r\n", (unsigned long)CAN1->BTR);
+    }
+  }
+  else if(strcmp(line,"CLKSTAT")==0 || strcmp(line,"CLK STAT")==0)
+  {
+    printf("clk sys=%lu hclk=%lu pclk1=%lu pclk2=%lu SystemCoreClock=%lu cfgr=0x%08lX\r\n",
+           (unsigned long)HAL_RCC_GetSysClockFreq(),
+           (unsigned long)HAL_RCC_GetHCLKFreq(),
+           (unsigned long)HAL_RCC_GetPCLK1Freq(),
+           (unsigned long)HAL_RCC_GetPCLK2Freq(),
+           (unsigned long)SystemCoreClock,
+           (unsigned long)RCC->CFGR);
+  }
+  else if(strcmp(line,"CANREG")==0 || strcmp(line,"CAN REG")==0)
+  {
+    printf("can mcr=0x%08lX msr=0x%08lX tsr=0x%08lX rf0r=0x%08lX ier=0x%08lX esr=0x%08lX btr=0x%08lX\r\n",
+           (unsigned long)CAN1->MCR,
+           (unsigned long)CAN1->MSR,
+           (unsigned long)CAN1->TSR,
+           (unsigned long)CAN1->RF0R,
+           (unsigned long)CAN1->IER,
+           (unsigned long)CAN1->ESR,
+           (unsigned long)CAN1->BTR);
   }
   else if(strcmp(line,"LOG:TEXT")==0)
   {

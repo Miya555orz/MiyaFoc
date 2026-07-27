@@ -9,9 +9,13 @@
 #define FOC_CAN_FEEDBACK_BASE_ID       0x290U
 #define FOC_CAN_COMMAND_ID             (FOC_CAN_COMMAND_BASE_ID + FOC_CAN_NODE_ID)
 #define FOC_CAN_FEEDBACK_ID            (FOC_CAN_FEEDBACK_BASE_ID + FOC_CAN_NODE_ID)
-#define FOC_CAN_COMMAND_TIMEOUT_MS     100U
+#define FOC_CAN_COMMAND_TIMEOUT_MS     0U
 #define FOC_CAN_FEEDBACK_PERIOD_MS     10U
-#define FOC_CAN_MAX_SPEED_RPS          120.0f
+#define FOC_CAN_MAX_SPEED_CMD          120.0f
+
+#define FOC_CAN_BOOT_TEST_ENABLE       0U
+#define FOC_CAN_BOOT_TEST_ID           0x101U
+#define FOC_CAN_BOOT_TEST_PERIOD_MS    100U
 
 typedef enum {
     FOC_CAN_MODE_STOP = 0,
@@ -35,6 +39,14 @@ typedef struct {
     uint32_t rx_error_count;
     uint32_t tx_count;
     uint32_t tx_error_count;
+    uint32_t tx_abort_count;
+    uint32_t last_tx_id;
+    uint32_t last_tx_free_level;
+    uint32_t last_hal_error;
+    uint32_t last_rx_id;
+    uint32_t loopback_count;
+    uint8_t timing_profile;
+    uint8_t loopback_mode;
     uint32_t timeout_count;
 } FocCanStatus_t;
 
@@ -44,5 +56,7 @@ void FocCan_ControlStep(void);
 void FocCan_NotifySerialCommand(void);
 void FocCan_Stop(void);
 const FocCanStatus_t *FocCan_GetStatus(void);
+HAL_StatusTypeDef FocCan_SetTimingProfile(uint8_t profile);
+HAL_StatusTypeDef FocCan_SetLoopback(uint8_t enable);
 
 #endif
